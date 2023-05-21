@@ -14,7 +14,7 @@ func isOrdered(arr []Variable) bool {
 func PrintStructure(s Structure) {
 	fmt.Printf("Start: %d\n", s.Start)
 	fmt.Printf("End: %d\n", s.End)
-	fmt.Printf("Content: %s\n", string(s.Content))
+	fmt.Printf("Content: %s\n", s.Formatted)
 
 	fmt.Println("Collections:")
 	for _, v := range s.Collections {

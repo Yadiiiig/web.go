@@ -18,7 +18,8 @@ type Structure struct {
 	Start int
 	End   int
 
-	Content []byte
+	Content   []byte
+	Formatted string
 
 	Vars        []Variable
 	Collections []string
@@ -32,7 +33,7 @@ type Variable struct {
 	End   int
 }
 
-type Action func() (string, error)
+type Action func() (map[int]interface{}, error)
 
 type Fn struct {
 	Run  Action
@@ -122,10 +123,14 @@ func (f *File) Parse(fns map[string]Fn) {
 
 	s.Vars = vars
 	s.Collections = cols
+	s.Formatted = string(s.Content)
 
+	ind := [][]int{}
 	for _, v := range s.Vars {
-		format(&s.Content, v.Start, v.End, "%v")
+		ind = append(ind, []int{v.Start, v.End})
 	}
+
+	s.Formatted = format(s.Formatted, ind)
 
 	if !isOrdered(s.Vars) {
 		sort.Slice(s.Vars, func(i, j int) bool {
@@ -151,23 +156,30 @@ func (f *File) Parse(fns map[string]Fn) {
 	f.Internal = s
 }
 
-func format(slice *[]byte, start, end int, newBytes string) {
-	if start < 0 || start >= len(*slice) || end < start || end > len(*slice) {
-		fmt.Println("Invalid start or end index")
-		return
+func format(input string, indexes [][]int) string {
+	sortIndexes(indexes)
+
+	for _, index := range indexes {
+		startIndex := index[0]
+		endIndex := index[1]
+
+		if startIndex < 0 || endIndex >= len(input) || startIndex > endIndex {
+			continue
+		}
+
+		replacement := "%v"
+		input = input[:startIndex] + replacement + input[endIndex+1:]
 	}
 
-	replaceLen := end - start
-	newSlice := []byte(fmt.Sprintf(newBytes))
+	return input
+}
 
-	if replaceLen == len(newSlice) {
-		copy((*slice)[start:end], newSlice)
-	} else if len(newSlice) < replaceLen {
-		copy((*slice)[start:start+len(newSlice)], newSlice)
-		copy((*slice)[start+len(newSlice):end], (*slice)[end:])
-
-		*slice = (*slice)[:len(*slice)-(replaceLen-len(newSlice))]
-	} else {
-		*slice = append((*slice)[:start], append(newSlice, (*slice)[end:]...)...)
+func sortIndexes(indexes [][]int) {
+	for i := 0; i < len(indexes)-1; i++ {
+		for j := 0; j < len(indexes)-i-1; j++ {
+			if indexes[j][0] < indexes[j+1][0] {
+				indexes[j], indexes[j+1] = indexes[j+1], indexes[j]
+			}
+		}
 	}
 }

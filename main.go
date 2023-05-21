@@ -12,10 +12,10 @@ func main() {
 	}
 }
 
-func User() (string, error) {
-	return "", nil
+func User() (map[int]interface{}, error) {
+	return nil, nil
 }
 
-func Counter() (string, error) {
-	return "", nil
+func Counter() (map[int]interface{}, error) {
+	return nil, nil
 }

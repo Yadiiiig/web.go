@@ -3,6 +3,7 @@ package library
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -28,7 +29,11 @@ func Scan(location string, actions ...Action) error {
 
 		file.Parse(fns)
 		PrintStructure(file.Internal)
+
+		GenerateEndpoints(&file)
 	}
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
 
 	return nil
 }

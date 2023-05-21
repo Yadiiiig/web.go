@@ -1,11 +1,14 @@
 -user
  <div>
-     This webpage has been visited this amount of times: {counter}.
-     Your last visit: {user.last_visit}
+     <p>This webpage has been visited this amount of times: {counter}.
+     Your last visit: {user.last_visit}</p>
+     <hr>
+     <p>Note if you are a human being:
+     Do you wish your visits to be deleted?</p>
 
-	Note if you are a human being:
-	Do you wish your ip to be deleted from the database?
-
-	<!-- button -->
-    {delete/id:user.id}
+    <button type="button" onclick="remove({user.id})">Click Me!</button>	
 </div>
+
+<script>
+    {remove}
+</script>

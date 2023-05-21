@@ -2,6 +2,7 @@ package library
 
 import (
 	"fmt"
+	"net/http"
 	"reflect"
 	"runtime"
 	"sort"
@@ -33,7 +34,7 @@ type Variable struct {
 	End   int
 }
 
-type Action func() (map[int]interface{}, error)
+type Action func(w http.ResponseWriter, r *http.Request) (string, interface{}, error)
 
 type Fn struct {
 	Run  Action
@@ -48,7 +49,7 @@ func MapFunctions(actions []Action) map[string]Fn {
 
 	for _, v := range actions {
 		path := runtime.FuncForPC(reflect.ValueOf(v).Pointer()).Name()
-		name := strings.ToLower(path[strings.LastIndex(path, ".")+1:])
+		name := strings.ToLower(path[strings.LastIndex(path, ".")+1 : len(path)-2])
 
 		m[name] = Fn{
 			Run:  v,
@@ -105,12 +106,14 @@ func (f *File) Parse(fns map[string]Fn) {
 			vars = append(vars, Variable{
 				value,
 				start,
-				k + 1,
+				k,
 			})
 
-			if !strings.Contains(value, ".") {
-				cols = append(cols, value)
+			if strings.Contains(value, "/") {
+				cols = append(cols, value[:strings.Index(value, "/")])
 
+			} else if !strings.Contains(value, ".") {
+				cols = append(cols, value)
 			}
 
 			start = 0

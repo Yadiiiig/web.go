@@ -1,0 +1,73 @@
+<html>
+
+<body onload="init()">
+    <div>
+        <p>This webpage has been visited this amount of times:
+            <span id="counter"></span></p>. Your last visit:
+            <div id="user.last_visit"></div>
+        </p>
+        <hr>
+        <p>Note if you are a human being: Do you wish your visits to be deleted?</p>
+
+        <button type="button" onclick="remove()">Click Me!</button>
+    </div>
+</body>
+
+</html>
+<script>
+    const args = new Map();
+    const headers = new Headers();
+
+
+    function remove() {
+        var requestOptions = {
+            method: 'POST',
+            headers: headers,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        fetch("http://localhost:8080/foo/remove", requestOptions)
+            .then(response => response.text())
+            .then(data => render(data))
+            .catch(error => console.log('error', error));
+    }
+
+    function init() {
+        headers.append("Content-Type", "application/json");
+
+        fetchArgs()
+            .then(() => {
+                for (let [k, v] of args) {
+                    console.log(k, v);
+                    document.getElementById(k).getElementById = v;
+                }
+            })
+            .catch(error => {
+                console.error('Error occurred while fetching API data:', error);
+            });
+    }
+
+    // Comes from a library file that is on a cdn for example
+    function fetchArgs() {
+        return new Promise((resolve, reject) => {
+            fetch("http://localhost:8080/foo")
+                .then(response => response.json())
+                .then(data => {
+                    render(data)
+                    resolve(); // Resolve the promise after storing the data in the map
+                })
+                .catch(error => {
+                    console.error('Error occurred while sending API request:', error);
+                    reject(error); // Reject the promise if an error occurs
+                });
+        });
+    }
+
+    function render(data) {
+        Object.entries(data).forEach(([responseKey, responseValue]) => {
+            args.set(responseKey, responseValue);
+        });
+
+    }
+</script>

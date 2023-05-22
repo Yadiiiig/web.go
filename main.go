@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -54,7 +55,7 @@ func UserFn(w http.ResponseWriter, r *http.Request) (string, interface{}, error)
 }
 
 func CounterFn(w http.ResponseWriter, r *http.Request) (string, interface{}, error) {
-	return "counter", atomic.AddInt64(&counter, 1), nil
+	return "counter", fmt.Sprintf("<h1>%d</h1>", atomic.AddInt64(&counter, 1)), nil
 }
 
 func RemoveFn(w http.ResponseWriter, r *http.Request) (string, interface{}, error) {

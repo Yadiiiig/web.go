@@ -1,6 +1,7 @@
 package library
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -16,6 +17,10 @@ func GenerateEndpoints(file *File) {
 
 		var wg sync.WaitGroup
 		wg.Add(amount)
+
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 		for i := 0; i < amount; i++ {
 			go func(it int, w http.ResponseWriter, r *http.Request) {
@@ -45,18 +50,31 @@ func GenerateEndpoints(file *File) {
 
 		fmt.Println(tmp)
 
-		fm := []interface{}{}
-		for _, v := range file.Internal.Vars {
-			if output, ok := tmp[v.Value]; ok {
-				fm = append(fm, output)
-			} else {
-				fm = append(fm, "ERROR")
-			}
+		json, err := json.Marshal(tmp)
+		if err != nil {
+			log.Fatal(err)
 		}
 
-		snippet := fmt.Sprintf(file.Internal.Formatted, fm[:]...)
+		w.Header().Set("Content-Type", "application/json")
 
-		fmt.Fprintf(w, snippet)
+		// Write the JSON response
+		_, err = w.Write(json)
+		if err != nil {
+			log.Fatal(err)
+		}
+		/*
+			fm := []interface{}{}
+			for _, v := range file.Internal.Vars {
+				if output, ok := tmp[v.Value]; ok {
+					fm = append(fm, output)
+				} else {
+					fm = append(fm, "ERROR")
+				}
+			}
+
+			snippet := fmt.Sprintf(file.Internal.Formatted, fm[:]...)
+		*/
+		// fmt.Fprintf(w, snippet)
 	})
 }
 

@@ -26,6 +26,13 @@ type Structure struct {
 	Collections []string
 
 	Functions []Fn
+
+	Requests []Request
+}
+
+type Request struct {
+	Name   string
+	Params []string
 }
 
 type Variable struct {
@@ -96,6 +103,7 @@ func (f *File) Parse(fns map[string]Fn) {
 	}
 
 	vars := []Variable{}
+	requests := []Request{}
 	start, value, found := 0, "", false
 
 	for k, v := range s.Content {
@@ -111,7 +119,13 @@ func (f *File) Parse(fns map[string]Fn) {
 
 			if strings.Contains(value, "/") {
 				cols = append(cols, value[:strings.Index(value, "/")])
+			} else if strings.Contains(value, "(") {
+				ind := strings.Index(value, "(")
 
+				requests = append(requests, Request{
+					Name:   value[:strings.Index(value, "(")],
+					Params: strings.Split(value[ind+1:], ","),
+				})
 			} else if !strings.Contains(value, ".") {
 				cols = append(cols, value)
 			}
@@ -126,6 +140,7 @@ func (f *File) Parse(fns map[string]Fn) {
 
 	s.Vars = vars
 	s.Collections = cols
+	s.Requests = requests
 	s.Formatted = string(s.Content)
 
 	ind := [][]int{}

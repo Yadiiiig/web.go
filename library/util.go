@@ -34,6 +34,12 @@ func PrintStructure(s Structure) {
 		fmt.Printf("\tVarsOrder: %v\n", v.VarsOrder)
 	}
 
+	fmt.Println("Requests:")
+	for _, v := range s.Requests {
+		fmt.Printf("\tName: %s\n", v.Name)
+		fmt.Printf("\tParams: %v\n", v.Params)
+	}
+
 }
 
 func PrintContentCheck(s Structure, content string) {

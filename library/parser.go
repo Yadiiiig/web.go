@@ -41,24 +41,53 @@ type Variable struct {
 	End   int
 }
 
-type Action func(w http.ResponseWriter, r *http.Request) (string, interface{}, error)
+type Function func(w http.ResponseWriter, r *http.Request) (string, interface{}, error)
+type Action func(params map[string]interface{}, w http.ResponseWriter, r *http.Request) (string, interface{}, error)
 
 type Fn struct {
-	Run  Action
+	Run  Function
 	Path string
 
 	VarsOrder []int
 }
 
+type Act struct {
+	Run  Action
+	Path string
+}
+
+func Map(fns []Function, acts []Action) (map[string]Fn, map[string]Act) {
+	f := MapFunctions(fns)
+	a := MapActions(acts)
+
+	return f, a
+}
+
 // map functions so they can be assigned to files
-func MapFunctions(actions []Action) map[string]Fn {
+func MapFunctions(fns []Function) map[string]Fn {
 	m := make(map[string]Fn)
 
-	for _, v := range actions {
+	for _, v := range fns {
 		path := runtime.FuncForPC(reflect.ValueOf(v).Pointer()).Name()
 		name := strings.ToLower(path[strings.LastIndex(path, ".")+1 : len(path)-2])
 
 		m[name] = Fn{
+			Run:  v,
+			Path: path,
+		}
+	}
+
+	return m
+}
+
+func MapActions(acts []Action) map[string]Act {
+	m := make(map[string]Act)
+
+	for _, v := range acts {
+		path := runtime.FuncForPC(reflect.ValueOf(v).Pointer()).Name()
+		name := strings.ToLower(path[strings.LastIndex(path, ".")+1 : len(path)-3])
+
+		m[name] = Act{
 			Run:  v,
 			Path: path,
 		}
@@ -76,7 +105,7 @@ func MapFunctions(actions []Action) map[string]Fn {
 6 check for correct order
 7 create function link
 */
-func (f *File) Parse(fns map[string]Fn) {
+func (f *File) Parse() {
 	s := Structure{}
 
 	for k, v := range f.Content {
@@ -111,17 +140,19 @@ func (f *File) Parse(fns map[string]Fn) {
 			start = k
 			found = true
 		} else if v == '}' {
-			vars = append(vars, Variable{
-				value,
-				start,
-				k,
-			})
+			if !strings.Contains(value, "(") {
+				fmt.Println(value)
+				vars = append(vars, Variable{
+					value,
+					start,
+					k,
+				})
+			}
 
 			if strings.Contains(value, "/") {
 				cols = append(cols, value[:strings.Index(value, "/")])
 			} else if strings.Contains(value, "(") {
 				ind := strings.Index(value, "(")
-
 				requests = append(requests, Request{
 					Name:   value[:strings.Index(value, "(")],
 					Params: strings.Split(value[ind+1:], ","),
@@ -155,22 +186,23 @@ func (f *File) Parse(fns map[string]Fn) {
 			return s.Vars[i].Start < s.Vars[j].Start
 		})
 	}
+	/*
+		functions := []Fn{}
+		for _, c := range s.Collections {
+			fn := Fn{}
 
-	functions := []Fn{}
-	for _, c := range s.Collections {
-		fn := Fn{}
-
-		for k, v := range s.Vars {
-			if strings.HasPrefix(v.Value, fmt.Sprintf("%s.", c)) || strings.HasPrefix(v.Value, fmt.Sprintf("%s", c)) {
-				fn = fns[c]
-				fn.VarsOrder = append(fn.VarsOrder, k)
+			for k, v := range s.Vars {
+				if strings.HasPrefix(v.Value, fmt.Sprintf("%s.", c)) || strings.HasPrefix(v.Value, fmt.Sprintf("%s", c)) {
+					fn = fns[c]
+					fn.VarsOrder = append(fn.VarsOrder, k)
+				}
 			}
+
+			functions = append(functions, fn)
 		}
 
-		functions = append(functions, fn)
-	}
-
-	s.Functions = functions
+		s.Functions = functions
+	*/
 	f.Internal = s
 }
 

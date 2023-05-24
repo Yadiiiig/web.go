@@ -1,0 +1,38 @@
+[
+ {
+  "Name": "foo",
+  "Internal": {
+   "Start": 0,
+   "End": 6,
+   "Content": "PGRpdj4KICAgICA8cD5UaGlzIHdlYnBhZ2UgaGFzIGJlZW4gdmlzaXRlZCB0aGlzIGFtb3VudCBvZiB0aW1lczoge2NvdW50ZXJ9LgogICAgIFlvdXIgbGFzdCB2aXNpdDoge3VzZXIubGFzdF92aXNpdH08L3A+CiAgICAgPGhyPgogICAgIDxwPk5vdGUgaWYgeW91IGFyZSBhIGh1bWFuIGJlaW5nOgogICAgIERvIHlvdSB3aXNoIHlvdXIgdmlzaXRzIHRvIGJlIGRlbGV0ZWQ/PC9wPgoKICAgICA8YnV0dG9uIHR5cGU9ImJ1dHRvbiIgb25jbGljaz0ie3JlbW92ZSh1c2VyLmlkLCBjb3VudGVyfSkiPkNsaWNrIE1lITwvYnV0dG9uPgkKPC9kaXY+CgoK",
+   "Formatted": "\u003cdiv\u003e\n     \u003cp\u003eThis webpage has been visited this amount of times: %v.\n     Your last visit: %v\u003c/p\u003e\n     \u003chr\u003e\n     \u003cp\u003eNote if you are a human being:\n     Do you wish your visits to be deleted?\u003c/p\u003e\n\n     \u003cbutton type=\"button\" onclick=\"{remove(user.id, counter})\"\u003eClick Me!\u003c/button\u003e\t\n\u003c/div\u003e\n\n\n",
+   "Vars": [
+    {
+     "Value": "counter",
+     "Start": 66,
+     "End": 74
+    },
+    {
+     "Value": "user.last_visit",
+     "Start": 99,
+     "End": 115
+    }
+   ],
+   "Collections": [
+    "user",
+    "counter"
+   ],
+   "Functions": null,
+   "Requests": [
+    {
+     "Name": "remove",
+     "Params": [
+      "user.id",
+      " counter"
+     ]
+    }
+   ]
+  },
+  "Content": "LXVzZXIKIDxkaXY+CiAgICAgPHA+VGhpcyB3ZWJwYWdlIGhhcyBiZWVuIHZpc2l0ZWQgdGhpcyBhbW91bnQgb2YgdGltZXM6IHtjb3VudGVyfS4KICAgICBZb3VyIGxhc3QgdmlzaXQ6IHt1c2VyLmxhc3RfdmlzaXR9PC9wPgogICAgIDxocj4KICAgICA8cD5Ob3RlIGlmIHlvdSBhcmUgYSBodW1hbiBiZWluZzoKICAgICBEbyB5b3Ugd2lzaCB5b3VyIHZpc2l0cyB0byBiZSBkZWxldGVkPzwvcD4KCiAgICAgPGJ1dHRvbiB0eXBlPSJidXR0b24iIG9uY2xpY2s9IntyZW1vdmUodXNlci5pZCwgY291bnRlcn0pIj5DbGljayBNZSE8L2J1dHRvbj4JCjwvZGl2PgoKCg=="
+ }
+]

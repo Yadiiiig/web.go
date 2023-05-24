@@ -3,18 +3,19 @@ package library
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 )
 
-func Scan(location string, actions ...Action) error {
+func Scan(location string) error {
 	tmp, err := os.ReadDir(location)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fns := MapFunctions(actions)
+	// fnsm := MapFunctions(fns)
+	// actsm := MapActions(acts)
 
+	files := []File{}
 	for _, e := range tmp {
 		name := e.Name()[:len(e.Name())-5]
 		content, err := os.ReadFile(fmt.Sprintf("%s/%s", location, e.Name()))
@@ -27,13 +28,13 @@ func Scan(location string, actions ...Action) error {
 			Content: content,
 		}
 
-		file.Parse(fns)
-		PrintStructure(file.Internal)
+		file.Parse()
+		files = append(files, file)
+		// PrintStructure(file.Internal)
 
-		GenerateEndpoints(&file)
+		//GenerateEndpoints(&file)
 	}
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
-
-	return nil
+	return write("build", files)
+	// log.Fatal(http.ListenAndServe(":8080", nil))
 }

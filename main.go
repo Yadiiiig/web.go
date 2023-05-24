@@ -25,7 +25,10 @@ func main() {
 	counter = 0
 	visitsMap = make(map[string]*VisitData)
 
-	err := web.Scan(".files", UserFn, CounterFn, RemoveFn)
+	functions := []web.Function{UserFn, CounterFn}
+	actions := []web.Action{RemoveAct}
+
+	err := web.Scan(".files", functions, actions)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,7 +61,7 @@ func CounterFn(w http.ResponseWriter, r *http.Request) (string, interface{}, err
 	return "counter", fmt.Sprintf("<h1>%d</h1>", atomic.AddInt64(&counter, 1)), nil
 }
 
-func RemoveFn(w http.ResponseWriter, r *http.Request) (string, interface{}, error) {
+func RemoveAct(args map[string]interface{}, w http.ResponseWriter, r *http.Request) (string, interface{}, error) {
 	return "remove", `function remove(id) {
     console.log("removing " + id);
 }`, nil

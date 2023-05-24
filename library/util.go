@@ -1,6 +1,21 @@
 package library
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+)
+
+func write(name string, data interface{}) error {
+	file, err := json.MarshalIndent(data, "", " ")
+	if err != nil {
+		return err
+	}
+
+	_ = ioutil.WriteFile(fmt.Sprintf("%s.json", name), file, 0644)
+
+	return nil
+}
 
 func isOrdered(arr []Variable) bool {
 	for i := 1; i < len(arr); i++ {

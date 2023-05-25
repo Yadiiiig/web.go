@@ -22,7 +22,6 @@
     "user",
     "counter"
    ],
-   "Functions": null,
    "Requests": [
     {
      "Name": "remove",

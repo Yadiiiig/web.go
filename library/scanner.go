@@ -6,21 +6,20 @@ import (
 	"os"
 )
 
-func Scan(location string) error {
+func Scan(location string, dev bool) ([]File, error) {
 	tmp, err := os.ReadDir(location)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// fnsm := MapFunctions(fns)
-	// actsm := MapActions(acts)
-
 	files := []File{}
+
 	for _, e := range tmp {
 		name := e.Name()[:len(e.Name())-5]
+
 		content, err := os.ReadFile(fmt.Sprintf("%s/%s", location, e.Name()))
 		if err != nil {
-			return err
+			return files, err
 		}
 
 		file := File{
@@ -30,11 +29,12 @@ func Scan(location string) error {
 
 		file.Parse()
 		files = append(files, file)
-		// PrintStructure(file.Internal)
-
-		//GenerateEndpoints(&file)
 	}
 
-	return write("build", files)
-	// log.Fatal(http.ListenAndServe(":8080", nil))
+	if dev {
+		return files, nil
+	} else {
+		return files, write("build", files)
+
+	}
 }

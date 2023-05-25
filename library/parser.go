@@ -25,7 +25,7 @@ type Structure struct {
 	Vars        []Variable
 	Collections []string
 
-	Functions []Fn
+	Functions []Fn `json:",omitempty"`
 
 	Requests []Request
 }
@@ -57,13 +57,30 @@ type Act struct {
 }
 
 func Map(fns []Function, acts []Action) (map[string]Fn, map[string]Act) {
-	f := MapFunctions(fns)
-	a := MapActions(acts)
+	fn := MapFunctions(fns)
+	ac := MapActions(acts)
 
-	return f, a
+	return fn, ac
 }
 
-// map functions so they can be assigned to files
+func (f *File) Add(fns map[string]Fn, acts map[string]Act) {
+	functions := []Fn{}
+	for _, c := range f.Internal.Collections {
+		fn := Fn{}
+
+		for k, v := range f.Internal.Vars {
+			if strings.HasPrefix(v.Value, fmt.Sprintf("%s.", c)) || strings.HasPrefix(v.Value, fmt.Sprintf("%s", c)) {
+				fn = fns[c]
+				fn.VarsOrder = append(fn.VarsOrder, k)
+			}
+		}
+
+		functions = append(functions, fn)
+	}
+
+	f.Internal.Functions = functions
+}
+
 func MapFunctions(fns []Function) map[string]Fn {
 	m := make(map[string]Fn)
 

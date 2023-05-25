@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 )
 
 func write(name string, data interface{}) error {
@@ -15,6 +16,26 @@ func write(name string, data interface{}) error {
 	_ = ioutil.WriteFile(fmt.Sprintf("%s.json", name), file, 0644)
 
 	return nil
+}
+
+func read(name string) ([]File, error) {
+	file, err := os.Open(fmt.Sprintf("%s.json", name))
+	if err != nil {
+		return []File{}, err
+	}
+
+	defer file.Close()
+
+	b, err := ioutil.ReadAll(file)
+	if err != nil {
+		return []File{}, err
+	}
+
+	files := []File{}
+
+	json.Unmarshal(b, &files)
+
+	return files, nil
 }
 
 func isOrdered(arr []Variable) bool {

@@ -8,7 +8,8 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-	web "webmaker/library"
+
+	web "web.go"
 )
 
 func main() {

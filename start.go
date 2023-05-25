@@ -37,7 +37,7 @@ func Start(args []string, fns []Function, acts []Action) {
 	}
 
 	fnsm, actsm := Map(fns, acts)
-	fmt.Println(fnsm, actsm)
+
 	for k := range files {
 		files[k].Add(fnsm, actsm)
 		GenerateEndpoints(&files[k])

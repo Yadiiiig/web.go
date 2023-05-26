@@ -1,8 +1,7 @@
-package library
+// This is generated code from web.go, please be carefull editing this.
+// Any changes made will be lost after a re-generate.
+// Thank you for using web.go, more information here: https://github.com/Yadiiiig/web.go
 
-const (
-	intro = "// This is generated code from web.go, please be carefull editing this.\n// Any changes made will be lost after a re-generate.\n// Thank you for using web.go, more information here: https://github.com/Yadiiiig/web.go\n"
-	base  = `
 const args = new Map();
 const headers = new Headers();
 
@@ -30,7 +29,7 @@ function render(data) {
 
 function fetchArgs(route) {
     return new Promise((resolve, reject) => {
-        fetch("%s/"+route)
+        fetch("localhost:8080/" + route)
             .then(response => response.json())
             .then(data => {
                 render(data)
@@ -43,21 +42,15 @@ function fetchArgs(route) {
     });
 }
 
-%s
-`
 
-	request = `{
-        method: '%v',
+function remove() {
+    let opts = {
+        method: 'POST',
         headers: headers,
-        body: %s,
-    }`
-
-	fetch = `
-        fetch("%s", opts)
-            .then(response => response.text())
-            .then(data => render(data))
+        body: [{ 'user.id': args['user.id'] }, { ' counter': args[' counter'] }],
+    };
+    fetch("localhost:8080/foo/remove", opts)
+        .then(response => response.text())
+        .then(data => render(data))
         .catch(error => console.log('error', error));
-    `
-
-	function = `function %s(%s) {%s}`
-)
+}

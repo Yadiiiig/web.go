@@ -57,7 +57,6 @@ func GenerateEndpoints(file *File) {
 
 		w.Header().Set("Content-Type", "application/json")
 
-		// Write the JSON response
 		_, err = w.Write(json)
 		if err != nil {
 			log.Fatal(err)

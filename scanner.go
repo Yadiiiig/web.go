@@ -24,7 +24,7 @@ func Scan(location string, dev bool) ([]File, error) {
 		if err != nil {
 			return files, err
 		}
-
+		fmt.Println(name)
 		if name == "index" {
 			tmp, err := ParseIndex(content)
 			if err != nil {
@@ -32,17 +32,28 @@ func Scan(location string, dev bool) ([]File, error) {
 			}
 
 			index = tmp
+			fmt.Println("added", index)
 
 			continue
 		}
+
+		fmt.Println(name, index)
 
 		file := File{
 			Name:    name,
 			Content: content,
 		}
 
-		file.Parse()
+		err = file.Parse()
+		if err != nil {
+			return files, err
+		}
+
 		files = append(files, file)
+	}
+
+	if index == "" {
+		index = defaultIndex
 	}
 
 	for k, file := range files {
@@ -59,7 +70,7 @@ func Scan(location string, dev bool) ([]File, error) {
 
 		_ = index
 		// surround with index html
-		err = writeHTML(file.Name, files[k].Internal.Formatted)
+		err = writeHTML(file.Name, fmt.Sprintf(index, file.Name, files[k].Internal.Formatted))
 		if err != nil {
 			return files, err
 		}

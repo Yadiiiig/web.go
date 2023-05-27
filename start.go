@@ -15,8 +15,6 @@ func Start(args []string, fns []Function, acts []Action) {
 		log.Fatal(err)
 	}
 
-	fmt.Println(settings)
-
 	if len(args) < 2 {
 		fmt.Println("No parameters specified")
 	} else if args[1] == "gen" {
@@ -24,12 +22,6 @@ func Start(args []string, fns []Function, acts []Action) {
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		/*
-			for _, file := range files {
-				PrintStructure(file.Internal)
-			}
-		*/
 
 		err = settings.GenLibrary(files)
 		if err != nil {
@@ -59,7 +51,6 @@ func Start(args []string, fns []Function, acts []Action) {
 	for k := range files {
 		files[k].Add(fnsm, actsm)
 		GenerateEndpoints(&files[k])
-		PrintStructure(files[k].Internal)
 	}
 
 	log.Fatal(http.ListenAndServe(settings.Endpoint, nil))

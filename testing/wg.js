@@ -5,10 +5,10 @@
 const args = new Map();
 const headers = new Headers();
 
-function init() {
+function init(route) {
     headers.append("Content-Type", "application/json");
 
-    fetchArgs()
+    fetchArgs(route)
         .then(() => {
             for (let [k, v] of args) {
                 console.log(k, v);

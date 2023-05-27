@@ -138,8 +138,13 @@ func MapActions(acts []Action) map[string]Act {
 6 check for correct order
 7 create function link
 */
-func (f *File) Parse() {
+func (f *File) Parse() error {
 	s := Structure{}
+	/*
+		if strings.Contains(string(f.Content), "<html>") {
+			return fmt.Errorf("Template cannot contain html tags")
+		}
+	*/
 
 	for k, v := range f.Content {
 		if v == '<' {
@@ -148,19 +153,20 @@ func (f *File) Parse() {
 		}
 	}
 
-	s.Content = f.Content[s.End+1:]
-
 	value := ""
 	cols := []string{}
 
-	for _, v := range f.Content[s.Start:s.End] {
-		if v == '\n' {
-			cols = append(cols, value)
-			value = ""
-		} else if v == '-' {
-			value = ""
-		} else {
-			value += string(v)
+	if s.End >= 0 {
+		s.Content = f.Content[s.End+1:]
+		for _, v := range f.Content[s.Start:s.End] {
+			if v == '\n' {
+				cols = append(cols, value)
+				value = ""
+			} else if v == '-' {
+				value = ""
+			} else {
+				value += string(v)
+			}
 		}
 	}
 
@@ -215,12 +221,23 @@ func (f *File) Parse() {
 	s.Formatters = formatters
 
 	f.Internal = s
+
+	return nil
 }
 
 // TODO add functionality
 func ParseIndex(content []byte) (string, error) {
+	str := string(content)
+	start := strings.Index(str, "<body>")
+	end := start + 6
 
-	return "", nil
+	if start >= 0 {
+		str = fmt.Sprintf("%s%s%s", str[:start], body, str[end:])
+	} else {
+		return str, fmt.Errorf("Body malformatted, needs a body")
+	}
+
+	return str, nil
 }
 func format(input string, indices [][]int) string {
 	for _, index := range indices {

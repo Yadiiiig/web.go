@@ -45,8 +45,6 @@ func (s *Settings) GenLibrary(files []File) error {
 
 	w.Flush()
 
-	fmt.Println(output)
-
 	return nil
 }
 

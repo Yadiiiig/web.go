@@ -6,10 +6,10 @@ const (
 const args = new Map();
 const headers = new Headers();
 
-function init() {
+function init(route) {
     headers.append("Content-Type", "application/json");
 
-    fetchArgs()
+    fetchArgs(route)
         .then(() => {
             for (let [k, v] of args) {
                 console.log(k, v);
@@ -61,4 +61,12 @@ function fetchArgs(route) {
 
 	function = `function %s(%s) {%s}`
 	token    = `<span data-token="%s"></span>`
+	body     = `<body onload="%s()">%s`
+
+	defaultIndex = `<html>
+		<body onload="%s()>
+		%s	
+		</body>
+	</html>
+	`
 )

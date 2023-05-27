@@ -140,11 +140,10 @@ func MapActions(acts []Action) map[string]Act {
 */
 func (f *File) Parse() error {
 	s := Structure{}
-	/*
-		if strings.Contains(string(f.Content), "<html>") {
-			return fmt.Errorf("Template cannot contain html tags")
-		}
-	*/
+
+	if strings.Contains(string(f.Content), "<html>") {
+		return fmt.Errorf("Template cannot contain html tags")
+	}
 
 	for k, v := range f.Content {
 		if v == '<' {

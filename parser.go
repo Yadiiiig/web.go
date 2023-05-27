@@ -16,22 +16,26 @@ type File struct {
 }
 
 type Structure struct {
-	Start int
-	End   int
+	Start, End int
 
-	Content   []byte
-	Formatted string
+	Content []byte
+
+	Formatted  string
+	Formatters []Formatter
 
 	Vars        []Variable
 	Collections []string
 
-	Functions []Fn `json:",omitempty"`
-
-	Requests []Request
+	Functions []Fn      `json:"-"`
+	Requests  []Request `json:"-"`
 }
 
 type Request struct {
-	Name   string
+	Name string
+	Run  Action
+
+	Start, End int
+
 	Params []string
 }
 
@@ -56,6 +60,13 @@ type Act struct {
 	Path string
 }
 
+type Formatter struct {
+	Name string
+	Var  bool
+
+	Start, End int
+}
+
 func Map(fns []Function, acts []Action) (map[string]Fn, map[string]Act) {
 	fn := MapFunctions(fns)
 	ac := MapActions(acts)
@@ -76,6 +87,11 @@ func (f *File) Add(fns map[string]Fn, acts map[string]Act) {
 		}
 
 		functions = append(functions, fn)
+	}
+
+	for k := range f.Internal.Requests {
+		req := f.Internal.Requests[k]
+		req.Run = acts[req.Name].Run
 	}
 
 	f.Internal.Functions = functions
@@ -173,6 +189,8 @@ func (f *File) Parse() {
 				requests = append(requests, Request{
 					Name:   value[:strings.Index(value, "(")],
 					Params: strings.Split(value[ind+1:], ","),
+					Start:  start,
+					End:    k + 1,
 				})
 			} else if !strings.Contains(value, ".") {
 				cols = append(cols, value)
@@ -191,54 +209,70 @@ func (f *File) Parse() {
 	s.Requests = requests
 	s.Formatted = string(s.Content)
 
-	ind := [][]int{}
-	for _, v := range s.Vars {
-		ind = append(ind, []int{v.Start, v.End})
-	}
+	formatters, indices := createFormatters(s.Vars, s.Requests)
 
-	s.Formatted = format(s.Formatted, ind)
+	s.Formatted = format(s.Formatted, indices)
+	s.Formatters = formatters
 
-	if !isOrdered(s.Vars) {
-		sort.Slice(s.Vars, func(i, j int) bool {
-			return s.Vars[i].Start < s.Vars[j].Start
-		})
-	}
-	/*
-		functions := []Fn{}
-		for _, c := range s.Collections {
-			fn := Fn{}
-
-			for k, v := range s.Vars {
-				if strings.HasPrefix(v.Value, fmt.Sprintf("%s.", c)) || strings.HasPrefix(v.Value, fmt.Sprintf("%s", c)) {
-					fn = fns[c]
-					fn.VarsOrder = append(fn.VarsOrder, k)
-				}
-			}
-
-			functions = append(functions, fn)
-		}
-
-		s.Functions = functions
-	*/
 	f.Internal = s
 }
 
-func format(input string, indexes [][]int) string {
-	sortIndexes(indexes)
+// TODO add functionality
+func ParseIndex(content []byte) (string, error) {
 
-	for _, index := range indexes {
-		startIndex := index[0]
-		endIndex := index[1]
+	return "", nil
+}
+func format(input string, indices [][]int) string {
+	for _, index := range indices {
+		start := index[0]
+		end := index[1]
 
-		if startIndex < 0 || endIndex >= len(input) || startIndex > endIndex {
+		if start < 0 || end >= len(input) || start > end {
 			continue
 		}
 
 		replacement := "%v"
-		input = input[:startIndex] + replacement + input[endIndex+1:]
+		input = input[:start] + replacement + input[end+1:]
 	}
 
 	return input
+}
+
+func createFormatters(vars []Variable, reqs []Request) ([]Formatter, [][]int) {
+	sorted := make([]Formatter, 0, len(vars)+len(reqs))
+	indices := [][]int{}
+
+	for _, variable := range vars {
+		indices = append(indices, []int{variable.Start, variable.End})
+		sorted = append(sorted, Formatter{
+			Name:  variable.Value,
+			Var:   true,
+			Start: variable.Start,
+			End:   variable.End,
+		})
+	}
+
+	for _, request := range reqs {
+		indices = append(indices, []int{request.Start, request.End})
+		sorted = append(sorted, Formatter{
+			Name: request.Name,
+			Var:  false,
+
+			Start: request.Start,
+			End:   request.End,
+		})
+	}
+
+	sort.Slice(sorted, func(i, j int) bool {
+		if sorted[i].Start != sorted[j].Start {
+			return sorted[i].Start < sorted[j].Start
+		}
+		return sorted[i].End < sorted[j].End
+	})
+
+	sortIndexes(indices)
+
+	return sorted, indices
 }
 
 func sortIndexes(indexes [][]int) {

@@ -29,7 +29,7 @@ function render(data) {
 
 function fetchArgs(route) {
     return new Promise((resolve, reject) => {
-        fetch("localhost:8080/" + route)
+        fetch("localhost:8080/"+route)
             .then(response => response.json())
             .then(data => {
                 render(data)
@@ -44,13 +44,13 @@ function fetchArgs(route) {
 
 
 function remove() {
-    let opts = {
+	let opts = {
         method: 'POST',
         headers: headers,
-        body: [{ 'user.id': args['user.id'] }, { ' counter': args[' counter'] }],
+        body: [{'user.id': args['user.id']}, {' counter': args[' counter']}],
     };
-    fetch("localhost:8080/foo/remove", opts)
-        .then(response => response.text())
-        .then(data => render(data))
+        fetch("localhost:8080/foo/remove", opts)
+            .then(response => response.text())
+            .then(data => render(data))
         .catch(error => console.log('error', error));
-}
+    }

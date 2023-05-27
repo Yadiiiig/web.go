@@ -12,17 +12,17 @@ import (
 
 func GenerateEndpoints(file *File) {
 	http.HandleFunc(fmt.Sprintf("/%s", file.Name), func(w http.ResponseWriter, r *http.Request) {
-		amount := len(file.Internal.Functions)
-		results := make(chan map[string]interface{}, amount)
+		total := len(file.Internal.Functions) + len(file.Internal.Requests)
+		results := make(chan map[string]interface{}, total)
 
 		var wg sync.WaitGroup
-		wg.Add(amount)
 
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-		for i := 0; i < amount; i++ {
+		for i := 0; i < len(file.Internal.Functions); i++ {
+			wg.Add(1)
 			go func(it int, w http.ResponseWriter, r *http.Request) {
 				name, res, err := file.Internal.Functions[it].Run(w, r)
 				if err != nil {
@@ -33,6 +33,37 @@ func GenerateEndpoints(file *File) {
 				result[name] = res
 
 				results <- result
+				wg.Done()
+			}(i, w, r)
+		}
+
+		for i := 0; i < len(file.Internal.Requests); i++ {
+			wg.Add(1)
+			go func(it int, w http.ResponseWriter, r *http.Request) {
+				if r.Method != http.MethodPost {
+					w.WriteHeader(http.StatusMethodNotAllowed)
+					fmt.Fprintf(w, "Invalid request method")
+					return
+				}
+
+				var data map[string]interface{}
+
+				err := json.NewDecoder(r.Body).Decode(&data)
+				if err != nil {
+					w.WriteHeader(http.StatusBadRequest)
+					fmt.Fprintf(w, "Failed to parse JSON data: %v", err)
+					return
+				}
+
+				name, res, err := file.Internal.Requests[it].Run(data, w, r)
+				if err != nil {
+					log.Println(err)
+				}
+
+				result := make(map[string]interface{})
+				result[name] = res
+				results <- result
+
 				wg.Done()
 			}(i, w, r)
 		}
@@ -61,19 +92,6 @@ func GenerateEndpoints(file *File) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		/*
-			fm := []interface{}{}
-			for _, v := range file.Internal.Vars {
-				if output, ok := tmp[v.Value]; ok {
-					fm = append(fm, output)
-				} else {
-					fm = append(fm, "ERROR")
-				}
-			}
-
-			snippet := fmt.Sprintf(file.Internal.Formatted, fm[:]...)
-		*/
-		// fmt.Fprintf(w, snippet)
 	})
 }
 

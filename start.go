@@ -25,9 +25,11 @@ func Start(args []string, fns []Function, acts []Action) {
 			log.Fatal(err)
 		}
 
-		for _, file := range files {
-			PrintStructure(file.Internal)
-		}
+		/*
+			for _, file := range files {
+				PrintStructure(file.Internal)
+			}
+		*/
 
 		err = settings.GenLibrary(files)
 		if err != nil {

@@ -13,9 +13,12 @@ func write(name string, data interface{}) error {
 		return err
 	}
 
-	_ = ioutil.WriteFile(fmt.Sprintf("%s.json", name), file, 0644)
+	return ioutil.WriteFile(fmt.Sprintf("%s.json", name), file, 0644)
+}
 
-	return nil
+func writeHTML(name, output string) error {
+	return ioutil.WriteFile(fmt.Sprintf("%s.html", name), []byte(output), 0644)
+
 }
 
 func read(name string) ([]File, error) {
@@ -45,6 +48,10 @@ func isOrdered(arr []Variable) bool {
 		}
 	}
 	return true
+}
+
+func replaceIndices(org *string, input string, start, end int) {
+	*org = fmt.Sprintf("%s%s%s", (*org)[:start], input, (*org)[end+1:])
 }
 
 func PrintStructure(s Structure) {

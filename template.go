@@ -60,4 +60,5 @@ function fetchArgs(route) {
     `
 
 	function = `function %s(%s) {%s}`
+	token    = `<span data-token="%s"></span>`
 )

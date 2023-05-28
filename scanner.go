@@ -59,7 +59,8 @@ func Scan(location string, dev bool) ([]File, error) {
 			if v.Var {
 				output = append(output, fmt.Sprintf(token, v.Name))
 			} else {
-				output = append(output, fmt.Sprintf("%s()", v.Name))
+				fmt.Println(fmt.Sprintf(onClick, v.Name))
+				output = append(output, fmt.Sprintf(onClick, v.Name))
 			}
 		}
 

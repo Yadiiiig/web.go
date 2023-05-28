@@ -61,5 +61,5 @@ func CounterFn(w http.ResponseWriter, r *http.Request) (string, interface{}, err
 }
 
 func RemoveAct(args map[string]interface{}, w http.ResponseWriter, r *http.Request) (string, interface{}, error) {
-	return "", ``, nil
+	return "action", "Deleted visits", nil
 }

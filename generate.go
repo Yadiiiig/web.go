@@ -59,14 +59,14 @@ func GenRequest(name, method, url string, args []string) string {
 	body = fmt.Sprintf(setParams, body)
 	body = fmt.Sprintf("%s%s", body, GenVariable("let", "opts", fmt.Sprintf(request, method)))
 	body = fmt.Sprintf("%s%s", body, fmt.Sprintf(fetch, url))
-	body = fmt.Sprintf(function, name, "", body)
+	body = fmt.Sprintf(buttonPrevent, name, body)
 
 	return body
 }
 
 func GenVariable(tp, name, args string) string {
 	var tmp string
-
+	fmt.Println(tmp)
 	if args == "" {
 		tmp = ";"
 	} else {

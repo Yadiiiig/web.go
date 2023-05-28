@@ -177,7 +177,7 @@ func (f *File) Parse() error {
 			start = k
 			found = true
 		} else if v == '}' {
-			if !strings.Contains(value, "(") {
+			if !strings.Contains(value, "(") && !strings.Contains(value, ":") {
 				vars = append(vars, Variable{
 					value,
 					start,
@@ -195,6 +195,15 @@ func (f *File) Parse() error {
 					Start:  start,
 					End:    k + 1,
 				})
+			} else if strings.Contains(value, ":") {
+				ind := strings.Index(value, ":")
+				vars = append(vars, Variable{
+					value[:ind],
+					start,
+					k,
+				})
+
+				fmt.Println(value[:ind])
 			} else if !strings.Contains(value, ".") {
 				cols = append(cols, value)
 			}

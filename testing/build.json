@@ -4,38 +4,49 @@
   "Internal": {
    "Start": 0,
    "End": 6,
-   "Content": "PGRpdj4KICAgICA8cD5UaGlzIHdlYnBhZ2UgaGFzIGJlZW4gdmlzaXRlZCB0aGlzIGFtb3VudCBvZiB0aW1lczoge2NvdW50ZXJ9LgogICAgIFlvdXIgbGFzdCB2aXNpdDoge3VzZXIubGFzdF92aXNpdH08L3A+CiAgICAgPGhyPgogICAgIDxwPk5vdGUgaWYgeW91IGFyZSBhIGh1bWFuIGJlaW5nOgogICAgIERvIHlvdSB3aXNoIHlvdXIgdmlzaXRzIHRvIGJlIGRlbGV0ZWQ/PC9wPgoKICAgICA8YnV0dG9uIHR5cGU9ImJ1dHRvbiIgb25jbGljaz0ie3JlbW92ZSh1c2VyLmlkfSkiPkNsaWNrIE1lITwvYnV0dG9uPgkKPC9kaXY+CgoK",
-   "Formatted": "\u003cdiv\u003e\n     \u003cp\u003eThis webpage has been visited this amount of times: \u003cspan data-token=\"counter\"\u003e\u003c/span\u003e.\n     Your last visit: \u003cspan data-token=\"user.last_visit\"\u003e\u003c/span\u003e\u003c/p\u003e\n     \u003chr\u003e\n     \u003cp\u003eNote if you are a human being:\n     Do you wish your visits to be deleted?\u003c/p\u003e\n\n     \u003cbutton type=\"button\" onclick=\"remove()\"\u003eClick Me!\u003c/button\u003e\t\n\u003c/div\u003e\n\n\n",
+   "Content": "PGRpdj4KICAgICA8cD57YWN0aW9uOm9wdH08L3A+CiAgICAgPHA+VGhpcyB3ZWJwYWdlIGhhcyBiZWVuIHZpc2l0ZWQgdGhpcyBhbW91bnQgb2YgdGltZXM6IHtjb3VudGVyfS4KICAgICBZb3VyIGxhc3QgdmlzaXQ6IHt1c2VyLmxhc3RfdmlzaXR9PC9wPgogICAgIDxocj4KICAgICA8cD5Ob3RlIGlmIHlvdSBhcmUgYSBodW1hbiBiZWluZzoKICAgICBEbyB5b3Ugd2lzaCB5b3VyIHZpc2l0cyB0byBiZSBkZWxldGVkPzwvcD4KCiAgICAgPGJ1dHRvbiB0eXBlPSJidXR0b24iIG9uY2xpY2s9IntyZW1vdmUodXNlci5pZCl9Ij5DbGljayBNZSE8L2J1dHRvbj4JCjwvZGl2PgoKCg==",
+   "Formatted": "\u003cdiv\u003e\n     \u003cp\u003e\u003cspan data-token=\"action\"\u003e\u003c/span\u003e\u003c/p\u003e\n     \u003cp\u003eThis webpage has been visited this amount of times: \u003cspan data-token=\"counter\"\u003e\u003c/span\u003e.\n     Your last visit: \u003cspan data-token=\"user.last_visit\"\u003e\u003c/span\u003e\u003c/p\u003e\n     \u003chr\u003e\n     \u003cp\u003eNote if you are a human being:\n     Do you wish your visits to be deleted?\u003c/p\u003e\n\n     \u003cbutton type=\"button\" onclick=\"remove(event)\"\u003eClick Me!\u003c/button\u003e\t\n\u003c/div\u003e\n\n\n",
    "Formatters": [
+    {
+     "Name": "action",
+     "Var": true,
+     "Start": 14,
+     "End": 25
+    },
     {
      "Name": "counter",
      "Var": true,
-     "Start": 66,
-     "End": 74
+     "Start": 91,
+     "End": 99
     },
     {
      "Name": "user.last_visit",
      "Var": true,
-     "Start": 99,
-     "End": 115
+     "Start": 124,
+     "End": 140
     },
     {
      "Name": "remove",
      "Var": false,
-     "Start": 255,
-     "End": 271
+     "Start": 280,
+     "End": 297
     }
    ],
    "Vars": [
     {
+     "Value": "action",
+     "Start": 14,
+     "End": 25
+    },
+    {
      "Value": "counter",
-     "Start": 66,
-     "End": 74
+     "Start": 91,
+     "End": 99
     },
     {
      "Value": "user.last_visit",
-     "Start": 99,
-     "End": 115
+     "Start": 124,
+     "End": 140
     }
    ],
    "Collections": [
@@ -43,6 +54,6 @@
     "counter"
    ]
   },
-  "Content": "LXVzZXIKIDxkaXY+CiAgICAgPHA+VGhpcyB3ZWJwYWdlIGhhcyBiZWVuIHZpc2l0ZWQgdGhpcyBhbW91bnQgb2YgdGltZXM6IHtjb3VudGVyfS4KICAgICBZb3VyIGxhc3QgdmlzaXQ6IHt1c2VyLmxhc3RfdmlzaXR9PC9wPgogICAgIDxocj4KICAgICA8cD5Ob3RlIGlmIHlvdSBhcmUgYSBodW1hbiBiZWluZzoKICAgICBEbyB5b3Ugd2lzaCB5b3VyIHZpc2l0cyB0byBiZSBkZWxldGVkPzwvcD4KCiAgICAgPGJ1dHRvbiB0eXBlPSJidXR0b24iIG9uY2xpY2s9IntyZW1vdmUodXNlci5pZH0pIj5DbGljayBNZSE8L2J1dHRvbj4JCjwvZGl2PgoKCg=="
+  "Content": "LXVzZXIKIDxkaXY+CiAgICAgPHA+e2FjdGlvbjpvcHR9PC9wPgogICAgIDxwPlRoaXMgd2VicGFnZSBoYXMgYmVlbiB2aXNpdGVkIHRoaXMgYW1vdW50IG9mIHRpbWVzOiB7Y291bnRlcn0uCiAgICAgWW91ciBsYXN0IHZpc2l0OiB7dXNlci5sYXN0X3Zpc2l0fTwvcD4KICAgICA8aHI+CiAgICAgPHA+Tm90ZSBpZiB5b3UgYXJlIGEgaHVtYW4gYmVpbmc6CiAgICAgRG8geW91IHdpc2ggeW91ciB2aXNpdHMgdG8gYmUgZGVsZXRlZD88L3A+CgogICAgIDxidXR0b24gdHlwZT0iYnV0dG9uIiBvbmNsaWNrPSJ7cmVtb3ZlKHVzZXIuaWQpfSI+Q2xpY2sgTWUhPC9idXR0b24+CQo8L2Rpdj4KCgo="
  }
 ]

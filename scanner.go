@@ -24,7 +24,7 @@ func Scan(location string, dev bool) ([]File, error) {
 		if err != nil {
 			return files, err
 		}
-		fmt.Println(name)
+
 		if name == "index" {
 			tmp, err := ParseIndex(content)
 			if err != nil {
@@ -32,12 +32,9 @@ func Scan(location string, dev bool) ([]File, error) {
 			}
 
 			index = tmp
-			fmt.Println("added", index)
 
 			continue
 		}
-
-		fmt.Println(name, index)
 
 		file := File{
 			Name:    name,

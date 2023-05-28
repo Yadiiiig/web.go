@@ -90,8 +90,7 @@ func (f *File) Add(fns map[string]Fn, acts map[string]Act) {
 	}
 
 	for k := range f.Internal.Requests {
-		req := f.Internal.Requests[k]
-		req.Run = acts[req.Name].Run
+		f.Internal.Requests[k].Run = acts[f.Internal.Requests[k].Name].Run
 	}
 
 	f.Internal.Functions = functions
@@ -179,7 +178,6 @@ func (f *File) Parse() error {
 			found = true
 		} else if v == '}' {
 			if !strings.Contains(value, "(") {
-				fmt.Println(value)
 				vars = append(vars, Variable{
 					value,
 					start,

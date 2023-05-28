@@ -48,16 +48,8 @@ func (s *Settings) GenLibrary(files []File) error {
 	return nil
 }
 
-func GenFile(url, body string) error {
-	output := fmt.Sprintf(base, url, body)
-	fmt.Println(output)
-
-	return nil
-}
-
 func GenRequest(name, method, url string, args []string) string {
 	body := ""
-	fmt.Println(args)
 
 	for _, arg := range args {
 		body += fmt.Sprintf(`"%s", `, arg)
@@ -68,7 +60,6 @@ func GenRequest(name, method, url string, args []string) string {
 	body = fmt.Sprintf("%s%s", body, GenVariable("let", "opts", fmt.Sprintf(request, method)))
 	body = fmt.Sprintf("%s%s", body, fmt.Sprintf(fetch, url))
 	body = fmt.Sprintf(function, name, "", body)
-	fmt.Println(body)
 
 	return body
 }

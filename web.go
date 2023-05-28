@@ -27,6 +27,8 @@ func GenerateEndpoints(file *File) error {
 }
 
 func (f *File) FunctionHandlers() error {
+	fmt.Println("Generated (action) endpoint: ", fmt.Sprintf("/%s", f.Name))
+
 	http.HandleFunc(fmt.Sprintf("/%s", f.Name), func(w http.ResponseWriter, r *http.Request) {
 		total := len(f.Internal.Functions)
 		results := make(chan map[string]interface{}, total)
@@ -79,12 +81,13 @@ func (f *File) ActionHandlers() error {
 
 			err := json.NewDecoder(r.Body).Decode(&data)
 			if err != nil {
+				fmt.Println(err)
 				w.WriteHeader(http.StatusBadRequest)
 				fmt.Fprintf(w, "Failed to parse JSON data: %v", err)
 				return
 			}
 
-			name, res, err := f.Internal.Requests[i].Run(data, w, r)
+			name, res, err := f.Internal.Requests[i-1].Run(data, w, r)
 			if err != nil {
 				log.Println(err)
 			}

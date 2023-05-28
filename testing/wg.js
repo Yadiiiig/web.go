@@ -59,7 +59,7 @@ function setParams(keys) {
 				}
 			}
 
-			return JSON.stringify(selected);
+			return selected;
 		}
 
 

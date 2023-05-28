@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Token Replacement Example</title>
+  </head>
+  <body>
+    <div id="content">
+      <h1>Hello, <span data-token="name"></span>!</h1>
+      <p><span data-token="message"></span></p>
+    </div>
+
+    <script>
+      // Assume you have received the key-value map in the following format:
+      const keyValueMap = {
+        "name": "John",
+        "message": "<strong>Welcome</strong> to my website!",
+      };
+
+      // Replace the tokens with their corresponding values
+      const placeholders = document.querySelectorAll("[data-token]");
+
+      placeholders.forEach(placeholder => {
+        const token = placeholder.dataset.token;
+        placeholder.innerHTML = keyValueMap[token] || "";
+      });
+    </script>
+  </body>
+</html>

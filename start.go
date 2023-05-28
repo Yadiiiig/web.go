@@ -50,8 +50,11 @@ func Start(args []string, fns []Function, acts []Action) {
 
 	for k := range files {
 		files[k].Add(fnsm, actsm)
-		GenerateEndpoints(&files[k])
+		err = GenerateEndpoints(&files[k])
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	log.Fatal(http.ListenAndServe(settings.Endpoint, nil))
+	log.Fatal(http.ListenAndServe(settings.Endpoint[7:], nil))
 }

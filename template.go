@@ -5,23 +5,31 @@ const (
 	base  = `
 const args = new Map();
 const headers = new Headers();
+let placeholders;
 
 function init(route) {
     headers.append("Content-Type", "application/json");
+	placeholders = document.querySelectorAll("[data-token]");
 
     fetchArgs(route)
         .then(() => {
-            for (let [k, v] of args) {
-                console.log(k, v);
-                document.getElementById(k).getElementById = v;
-            }
-        })
+            render()
+		})
         .catch(error => {
             console.error('Error occurred while fetching API data:', error);
         });
 }
 
-function render(data) {
+function render() {
+    placeholders.forEach(placeholder => {
+        const token = placeholder.dataset.token;
+        const replacementValue = args.get(token) || "";
+        placeholder.innerHTML = replacementValue;
+		console.log(token, args.get(token))
+    });
+}
+
+function store(data) {
     Object.entries(data).forEach(([responseKey, responseValue]) => {
         args.set(responseKey, responseValue);
     });
@@ -33,7 +41,7 @@ function fetchArgs(route) {
         fetch("%s/"+route)
             .then(response => response.json())
             .then(data => {
-                render(data)
+                store(data)
                 resolve(); // Resolve the promise after storing the data in the map
             })
             .catch(error => {
@@ -43,16 +51,29 @@ function fetchArgs(route) {
     });
 }
 
+function setParams(keys) {
+			const selected = {};
+
+			for (const key of keys) {
+				if (args.has(key)) {
+					selected[key] = args.get(key);
+				}
+			}
+
+			return JSON.stringify(selected);
+		}
+
+
 %s
 `
 
 	request = `{
         method: '%v',
         headers: headers,
-        body: %s,
+        body: JSON.stringify(selected),
     }`
 
-	fetch = `
+	fetch = `console.log(opts.body);console.log(args);
         fetch("%s", opts)
             .then(response => response.text())
             .then(data => render(data))
@@ -61,12 +82,25 @@ function fetchArgs(route) {
 
 	function = `function %s(%s) {%s}`
 	token    = `<span data-token="%s"></span>`
-	body     = `<body onload="%s()">%s`
+	script   = `<script type="text/javascript" src="wg.js"></script>`
 
-	defaultIndex = `<html>
-		<body onload="%s()>
-		%s	
-		</body>
-	</html>
+	body = `
+		<head>
+			<script type="text/javascript" src="wg.js"></script>
+		</head>
+		<body onload="init('%s')">%s
 	`
+
+	defaultIndex = `
+		<html>
+			<head>
+				<script type="text/javascript" src="wg.js"></script>
+			</head>
+			<body onload="init('%s')>
+				%s
+			</body>
+		</html>
+	`
+
+	setParams = `const selected = setParams(%s);`
 )

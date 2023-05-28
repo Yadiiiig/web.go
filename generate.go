@@ -57,16 +57,18 @@ func GenFile(url, body string) error {
 
 func GenRequest(name, method, url string, args []string) string {
 	body := ""
+	fmt.Println(args)
 
 	for _, arg := range args {
-		body += fmt.Sprintf("{'%v': args['%v']}, ", arg, arg)
+		body += fmt.Sprintf(`"%s", `, arg)
 	}
 
 	body = fmt.Sprintf("[%s]", body[:len(body)-2])
-	body = GenVariable("let", "opts", fmt.Sprintf(request, method, body))
+	body = fmt.Sprintf(setParams, body)
+	body = fmt.Sprintf("%s%s", body, GenVariable("let", "opts", fmt.Sprintf(request, method)))
 	body = fmt.Sprintf("%s%s", body, fmt.Sprintf(fetch, url))
-
 	body = fmt.Sprintf(function, name, "", body)
+	fmt.Println(body)
 
 	return body
 }

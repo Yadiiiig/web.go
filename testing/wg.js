@@ -4,23 +4,31 @@
 
 const args = new Map();
 const headers = new Headers();
+let placeholders;
 
 function init(route) {
     headers.append("Content-Type", "application/json");
+	placeholders = document.querySelectorAll("[data-token]");
 
     fetchArgs(route)
         .then(() => {
-            for (let [k, v] of args) {
-                console.log(k, v);
-                document.getElementById(k).getElementById = v;
-            }
-        })
+            render()
+		})
         .catch(error => {
             console.error('Error occurred while fetching API data:', error);
         });
 }
 
-function render(data) {
+function render() {
+    placeholders.forEach(placeholder => {
+        const token = placeholder.dataset.token;
+        const replacementValue = args.get(token) || "";
+        placeholder.innerHTML = replacementValue;
+		console.log(token, args.get(token))
+    });
+}
+
+function store(data) {
     Object.entries(data).forEach(([responseKey, responseValue]) => {
         args.set(responseKey, responseValue);
     });
@@ -29,10 +37,10 @@ function render(data) {
 
 function fetchArgs(route) {
     return new Promise((resolve, reject) => {
-        fetch("localhost:8080/"+route)
+        fetch("http://127.0.0.1:8080/"+route)
             .then(response => response.json())
             .then(data => {
-                render(data)
+                store(data)
                 resolve(); // Resolve the promise after storing the data in the map
             })
             .catch(error => {
@@ -42,14 +50,27 @@ function fetchArgs(route) {
     });
 }
 
+function setParams(keys) {
+			const selected = {};
 
-function remove() {
+			for (const key of keys) {
+				if (args.has(key)) {
+					selected[key] = args.get(key);
+				}
+			}
+
+			return JSON.stringify(selected);
+		}
+
+
+
+function remove() {const selected = setParams(["user.id"]);
 	let opts = {
         method: 'POST',
         headers: headers,
-        body: [{'user.id': args['user.id']}, {' counter': args[' counter']}],
-    };
-        fetch("localhost:8080/foo/remove", opts)
+        body: JSON.stringify(selected),
+    };console.log(opts.body);console.log(args);
+        fetch("http://127.0.0.1:8080/foo/remove", opts)
             .then(response => response.text())
             .then(data => render(data))
         .catch(error => console.log('error', error));

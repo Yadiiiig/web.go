@@ -13,11 +13,11 @@ func write(name string, data interface{}) error {
 		return err
 	}
 
-	return ioutil.WriteFile(fmt.Sprintf("%s.json", name), file, 0644)
+	return ioutil.WriteFile(fmt.Sprintf(prefix, fmt.Sprintf("%s.json", name)), file, 0644)
 }
 
 func writeHTML(name, output string) error {
-	return ioutil.WriteFile(fmt.Sprintf("%s.html", name), []byte(output), 0644)
+	return ioutil.WriteFile(fmt.Sprintf(prefix, fmt.Sprintf("%s.html", name)), []byte(output), 0644)
 
 }
 

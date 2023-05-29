@@ -26,13 +26,13 @@ type Structure struct {
 	Vars        []Variable
 	Collections []string
 
-	Functions []Fn      `json:"-"`
-	Requests  []Request `json:"-"`
+	Functions []Fn `json:"-"`
+	Requests  []Request
 }
 
 type Request struct {
 	Name string
-	Run  Action
+	Run  Action `json:"-"`
 
 	Start, End int
 
@@ -202,8 +202,6 @@ func (f *File) Parse() error {
 					start,
 					k,
 				})
-
-				fmt.Println(value[:ind])
 			} else if !strings.Contains(value, ".") {
 				cols = append(cols, value)
 			}

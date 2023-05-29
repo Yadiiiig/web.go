@@ -1,22 +1,11 @@
-<html>
-    
-		<head>
-			<script type="text/javascript" src="wg.js"></script>
-		</head>
-		<body onload="init('foo')"><div>
-     <p><span data-token="action"></span></p>
-     <p>This webpage has been visited this amount of times: <span data-token="counter"></span>.
-     Your last visit: <span data-token="user.last_visit"></span></p>
+-user
+ <div>
+     <p>{action:opt}</p>
+     <p>This webpage has been visited this amount of times: {counter}.
+     Your last visit: {user.last_visit}</p>
      <hr>
      <p>Note if you are a human being:
      Do you wish your visits to be deleted?</p>
 
-     <button type="button" onclick="remove(event)">Click Me!</button>	
+     <button type="button" onclick="{remove(user.id)}">Click Me!</button>	
 </div>
-
-
-
-	
-        
-    </body>
-</html>

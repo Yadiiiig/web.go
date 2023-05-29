@@ -4,10 +4,24 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 func Scan(location string, dev bool) ([]File, error) {
-	tmp, err := os.ReadDir(location)
+	var tmp []os.DirEntry
+	var err error
+
+	if location == "." {
+		path, err := os.Getwd()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		tmp, err = os.ReadDir(path)
+	} else {
+		tmp, err = os.ReadDir(location)
+	}
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -18,8 +32,11 @@ func Scan(location string, dev bool) ([]File, error) {
 	// add index.html check, otherwise add default template
 	// make sure to add a formatter inbetween body tags
 	for _, e := range tmp {
-		name := e.Name()[:len(e.Name())-5]
+		if e.IsDir() || !strings.Contains(e.Name(), ".html") || e.Name() == "index.html" {
+			continue
+		}
 
+		name := e.Name()[:len(e.Name())-5]
 		content, err := os.ReadFile(fmt.Sprintf("%s/%s", location, e.Name()))
 		if err != nil {
 			return files, err
@@ -59,7 +76,6 @@ func Scan(location string, dev bool) ([]File, error) {
 			if v.Var {
 				output = append(output, fmt.Sprintf(token, v.Name))
 			} else {
-				fmt.Println(fmt.Sprintf(onClick, v.Name))
 				output = append(output, fmt.Sprintf(onClick, v.Name))
 			}
 		}
@@ -77,6 +93,6 @@ func Scan(location string, dev bool) ([]File, error) {
 	if dev {
 		return files, nil
 	} else {
-		return files, write("build", files)
+		return files, write("runtime", files)
 	}
 }

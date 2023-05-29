@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+const prefix = "build/%s"
+
 func (s *Settings) GenLibrary(files []File) error {
 	var output string
 
@@ -30,7 +32,7 @@ func (s *Settings) GenLibrary(files []File) error {
 	output = fmt.Sprintf(base, s.Endpoint, output)
 	output = fmt.Sprintf("%s%s", intro, output)
 
-	f, err := os.OpenFile("wg.js", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	f, err := os.OpenFile(fmt.Sprintf(prefix, "wg.js"), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		return err
 	}
@@ -38,6 +40,7 @@ func (s *Settings) GenLibrary(files []File) error {
 	defer f.Close()
 
 	w := bufio.NewWriter(f)
+
 	_, err = w.WriteString(output)
 	if err != nil {
 		return err
@@ -66,7 +69,7 @@ func GenRequest(name, method, url string, args []string) string {
 
 func GenVariable(tp, name, args string) string {
 	var tmp string
-	fmt.Println(tmp)
+
 	if args == "" {
 		tmp = ";"
 	} else {

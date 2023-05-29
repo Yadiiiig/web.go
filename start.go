@@ -15,6 +15,10 @@ func Start(args []string, fns []Function, acts []Action) {
 		log.Fatal(err)
 	}
 
+	if len(args) == 2 {
+		args = append(args, ".")
+	}
+
 	if len(args) < 2 {
 		fmt.Println("No parameters specified")
 	} else if args[1] == "gen" {
@@ -28,10 +32,12 @@ func Start(args []string, fns []Function, acts []Action) {
 			log.Fatal(err)
 		}
 
+		fmt.Println("-> Successfully generated your project in the build folder.")
+
 		return
 
 	} else if args[1] == "run" {
-		files, err = read(args[2])
+		files, err = read("build/runtime")
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -1,0 +1,8 @@
+goos: linux
+goarch: amd64
+pkg: web.go/go_gen
+cpu: AMD Ryzen 7 3700X 8-Core Processor             
+BenchmarkMapPersonGen-16           	 6250502	       193.1 ns/op	      64 B/op	       4 allocs/op
+BenchmarkMapPersonReflection-16    	  503028	      2325 ns/op	    1160 B/op	      36 allocs/op
+PASS
+ok  	web.go/go_gen	2.598s

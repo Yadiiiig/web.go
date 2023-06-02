@@ -38,6 +38,50 @@ func main() {
 
 	fmt.Println(outputGen)
 	fmt.Println(outputRef)
+
+	structType := reflect.TypeOf(Person{})
+
+	fmt.Printf("func Map%s(dst %s) map[string]interface{} {\n", "Person", "Person")
+	fmt.Printf("\toutput := map[string]interface{}{}\n\n")
+
+	generateMappingCode(structType, "output", "")
+
+	fmt.Printf("\treturn output\n")
+	fmt.Printf("}\n")
+}
+
+func generateMappingCode(structType reflect.Type, outputVar, parent string) {
+	for i := 0; i < structType.NumField(); i++ {
+		field := structType.Field(i)
+		fieldType := field.Type
+		fieldName := field.Name
+
+		if field.Type.Kind() == reflect.Struct {
+			generateMappingCode(fieldType, outputVar, parent+fieldName+".")
+		} else {
+			fieldPath := fmt.Sprintf("%s%s", parent, fieldName)
+			fmt.Printf("\tif !isZeroValue(dst.%s) {\n", fieldPath)
+			fmt.Printf("\t\t%s[\"%s\"] = dst.%s\n", outputVar, fieldPath, fieldPath)
+			fmt.Printf("\t}\n")
+		}
+	}
+}
+
+func isZeroValue(v reflect.Value) bool {
+	switch v.Kind() {
+	case reflect.Bool:
+		return !v.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return v.Int() == 0
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return v.Uint() == 0
+	case reflect.Float32, reflect.Float64:
+		return v.Float() == 0.0
+	case reflect.String:
+		return v.String() == ""
+	default:
+		return v.IsNil()
+	}
 }
 
 type Field struct {
@@ -126,5 +170,28 @@ func MapPersonReflection(s interface{}, parent string) map[string]interface{} {
 		}
 	}
 
+	return output
+}
+
+// Testing
+
+func MapPersonTest(dst Person) map[string]interface{} {
+	output := map[string]interface{}{}
+
+	if !isZeroValue(dst.Name) {
+		output["Name"] = dst.Name
+	}
+	if !isZeroValue(dst.Age) {
+		output["Age"] = dst.Age
+	}
+	if !isZeroValue(dst.Address.Street) {
+		output["Address.Street"] = dst.Address.Street
+	}
+	if !isZeroValue(dst.Address.City) {
+		output["Address.City"] = dst.Address.City
+	}
+	if !isZeroValue(dst.Address.Country) {
+		output["Address.Country"] = dst.Address.Country
+	}
 	return output
 }
